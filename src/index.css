@@ -1,5 +1,28 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
+html {
+	height: 100%;
+	width: 100%;
 }
+body{
+	background: lightblue;
+	min-height: 100%;
+	min-width: 100%;
+	font: 14px "Century Gothic", Futura, sans-serif;
+}
+
+.background {
+	position: absolute;
+	background-color: white;
+	width: 800px;
+	margin: auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.recipy-data:hover {
+	background: lightgreen;
+
+}
+
+
