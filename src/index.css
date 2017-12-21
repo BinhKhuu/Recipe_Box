@@ -10,7 +10,6 @@ body{
 }
 
 .background {
-	position: absolute;
 	background-color: white;
 	width: 800px;
 	margin: auto;
@@ -20,9 +19,29 @@ body{
   left: 0;
 }
 
-.recipy-data:hover {
+.list-item:hover {
 	background: lightgreen;
-
 }
 
+.recipy-vew {
+	background: lightblue;
+	height: 300px;
+	width: 100%;
+}
 
+.list-delete{
+	float: right;
+	border:1px solid black;
+}
+.list-delete:hover {
+	background: red;
+}
+
+.list-title{
+	float: left;
+	margin-top: -12px;
+	margin-left: -12px;
+	margin-bottom: -12px;
+	padding-bottom: 26px;
+	width:90%;
+}
