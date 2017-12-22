@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import update from 'immutability-helper';
 
 class RecipyData extends React.Component {
 	//*** things to do 
@@ -27,7 +28,7 @@ class RecipyListItem extends React.Component {
 			<tr>
 				<td className ='list-item'>
 					<div className='list-title' onClick={this.props.show}>{this.props.title}</div>
-					<button class='list-delete' onClick={this.props.remove}>delete</button>
+					<button className='list-delete' onClick={this.props.remove}>delete</button>
 				</td>
 			</tr>
 		)
@@ -39,31 +40,34 @@ class RecipyList extends React.Component {
 		super();
 		this.state = {
 			recipyList: ['o hai', 'mark'],
-			recipyView: ['none','none']
-			//can have array that tracks which items are hidden and when are dispalyed for the recipyView
+			recipyView: ['none','none'],
+			recipyBook: [{
+				title: 'spaghetti',
+				display: 'none',
+				recipy: ['noodles','sauce','meat balls']
+			}],
 		}
 		this.removeRecipy = this.removeRecipy.bind(this);
 		this.addRecipy = this.addRecipy.bind(this);
 		this.showRecipy = this.showRecipy.bind(this);
 	}
 	addRecipy(index) {
-		var rows = this.state.recipyList;
-		var data = this.state.recipyView;
-		rows.push('new');
-		data.push('none');
-		this.setState({recipyList:rows })
+		var page = {title:'new',display:'none',recipy:[]};
+		var newBook = update(this.state.recipyBook, {$push:[page]});
+		this.setState({recipyBook:newBook});
 	}
 	removeRecipy(index) {
-		var list = this.state.recipyList;
-		list.splice(index,1);
-		this.setState({recipyList: list});		
+		var newBook = update(this.state.recipyBook, {$splice: [[index,1]]});
+		this.setState({recipyBook:newBook});
 	}
 	showRecipy(index) {
-		var display = this.state.recipyView;
-		var toggle = (display[index] === 'none') ? '' : 'none';
-		display.splice(index,1);
-		display.splice(index,0,toggle);
-		this.setState({recipyView:display});
+		var title = this.state.recipyBook[index].title;
+		var recipy = this.state.recipyBook[index].recipy
+		var display = this.state.recipyBook[index].display;
+		display = (display === 'none') ? '' : 'none';
+		var page = {title:title,display:display,recipy:recipy};
+		var newBook = update(this.state.recipyBook, {$splice:[[index,1,page]]});
+		this.setState({recipyBook: newBook})
 	}
 	render() {
 		return (
@@ -75,10 +79,10 @@ class RecipyList extends React.Component {
 						</tr>
 					</thead>
 					<tbody>
-						{this.state.recipyList.map((x,i)=> {
+						{this.state.recipyBook.map((recipy,i)=> {
 							return ([
-								<RecipyListItem className='recipy-data' show={this.showRecipy.bind(this, i)} key={i} title={this.state.recipyList[i]} remove={this.removeRecipy.bind(this, i)} />,
-								<RecipyData key={'row-expanded-' + i} display={this.state.recipyView[i]}/>
+								<RecipyListItem className='recipy-data' show={this.showRecipy.bind(this, i)} key={i} title={recipy.title} remove={this.removeRecipy.bind(this, i)} />,
+								<RecipyData key={'row-expanded-' + i} display={recipy.display}/>
 								])
 						})}				
 					</tbody>
