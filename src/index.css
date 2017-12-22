@@ -24,14 +24,12 @@ body{
 }
 
 .recipy-vew {
-	background: lightblue;
-	height: 300px;
 	width: 100%;
 }
 
 .list-delete{
+	font-size: 50px;
 	float: right;
-	border:1px solid black;
 }
 .list-delete:hover {
 	background: red;
@@ -43,5 +41,13 @@ body{
 	margin-left: -12px;
 	margin-bottom: -12px;
 	padding-bottom: 26px;
+	padding-left: 10px;
+	padding-top: 10px;
 	width:90%;
 }
+
+.title-icon {
+	font-size: 20px;
+	border: 1px solid black;
+}
+

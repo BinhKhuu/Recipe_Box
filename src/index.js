@@ -3,17 +3,33 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import update from 'immutability-helper';
 
+class Ingredients extends React.Component {
+	render(){
+		return (
+			<tr className='table-info'>
+				<td>{this.props.step}. {this.props.item}</td>
+			</tr>
+		);
+	}
+}
 class RecipyData extends React.Component {
-	//*** things to do 
-	// create state that holds recipy data
-	// from recipy data crate table that holds data
-	// think about better datastructure for state
 	render() {
 		return (
 			<tr className='recipy-data' style={{display:this.props.display}}>
 				<td>
 					<div className='recipy-vew'>
-						
+						<table className='table table-hover'>
+							<thead>			
+								<tr className='table-primary'>
+									<th scope='col' width='100%' >Ingredients</th>
+								</tr>
+							</thead>
+							<tbody>
+							{this.props.ingredients.map((x,i)=>{
+								return <Ingredients key={this.props.title + '-Ingredient-' + i } item={x} step={i+1}/>
+							})}
+							</tbody>
+						</table>
 					</div>
 					<button className='recipy-edit'>edit</button>
 				</td>
@@ -27,8 +43,8 @@ class RecipyListItem extends React.Component {
 		return (
 			<tr>
 				<td className ='list-item'>
-					<div className='list-title' onClick={this.props.show}>{this.props.title}</div>
-					<button className='list-delete' onClick={this.props.remove}>delete</button>
+					<div className='list-title' onClick={this.props.show}><h4> {(this.props.display =='none') ? "+" : "-" } {this.props.title}</h4></div>
+					<i className='list-delete material-icons' onClick={this.props.remove}>delete</i>
 				</td>
 			</tr>
 		)
@@ -51,6 +67,8 @@ class RecipyList extends React.Component {
 		this.addRecipy = this.addRecipy.bind(this);
 		this.showRecipy = this.showRecipy.bind(this);
 	}
+	/*!!!!!!!!!!!! to do: create form to add custom recipy
+	*/
 	addRecipy(index) {
 		var page = {title:'new',display:'none',recipy:[]};
 		var newBook = update(this.state.recipyBook, {$push:[page]});
@@ -74,15 +92,16 @@ class RecipyList extends React.Component {
 			<div className='background'>
 				<table className='table'>
 					<thead>
-						<tr className='thead-light'>
-							<th scope='col' width='100%' >Recipy</th>
+						<tr className='table-success'>
+							<th scope='col' width='100%'><h1>Recipy Book</h1></th>
 						</tr>
 					</thead>
 					<tbody>
 						{this.state.recipyBook.map((recipy,i)=> {
 							return ([
-								<RecipyListItem className='recipy-data' show={this.showRecipy.bind(this, i)} key={i} title={recipy.title} remove={this.removeRecipy.bind(this, i)} />,
-								<RecipyData key={'row-expanded-' + i} display={recipy.display}/>
+								//!!! change parameters to pass object 
+								<RecipyListItem className='recipy-data' show={this.showRecipy.bind(this, i)} key={i} title={recipy.title} remove={this.removeRecipy.bind(this, i)} display={recipy.display}/>,
+								<RecipyData key={'row-expanded-' + i} display={recipy.display} ingredients={recipy.recipy} title={recipy.title +"-"+i} />
 								])
 						})}				
 					</tbody>
