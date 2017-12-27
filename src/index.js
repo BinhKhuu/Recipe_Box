@@ -76,7 +76,12 @@ class RecipyForm extends React.Component {
 class RecipyList extends React.Component {
 	constructor (){
 		super();
-		//edit : array to check if we are editing or adding a new recipy first value: boolean, second value: index of edited item
+		/*editFlag : object indicating editing or adding a new recipy. 
+				edit: boolean false = adding new item, 
+				index: index of item to be changed, default 0
+				title: recipy title at index location
+				ingredients: recipy ingredients at index location
+		*/
 		this.state = {
 			recipyBook: [{
 				title: 'spaghetti',
@@ -84,12 +89,7 @@ class RecipyList extends React.Component {
 				ingredients: ['noodles','sauce','meat balls']
 			}],
 			showModal: false,
-			edit: [false,0],
-			formInputVal: {
-				title: "",
-				ingredients: []
-			},
-			edit: {
+			editFlag: {
 				edit: false,
 				index: 0,
 				title: "",
@@ -110,18 +110,19 @@ class RecipyList extends React.Component {
     this.setState({ showModal: false });
   }
   handleSubmit(event) {
-  	var index = this.state.edit[1];
+
   	var title = event.target.title.value;
   	var ingredients = event.target.ingredients.value.split(',');
   	var page = {title:title,display:'none',ingredients:ingredients};
-  	var newBook = [];
-  	if(this.state.edit[0] === false) {
+  	var newBook;
+  	if(this.state.editFlag.edit === false) {
   		newBook = update(this.state.recipyBook, {$push:[page]});
   	} else {
+  		var index = this.state.editFlag.index;
   		newBook = update(this.state.recipyBook, {$splice:[[index,1,page]]});
   	}
   	
-  	this.setState({recipyBook:newBook, showModal: false, edit: [false,0]});
+  	this.setState({recipyBook:newBook, showModal: false, editFlag: {edit:false,index:0,title:"",ingredients: []} });
   	event.preventDefault();
   }
 	removeRecipy(index) {
@@ -141,8 +142,8 @@ class RecipyList extends React.Component {
 	edit(index) {
 		var title = this.state.recipyBook[index].title;
 		var ingredients = this.state.recipyBook[index].ingredients;
-		var inputVals = {title: title, ingredients: ingredients};
-		this.setState({showModal:true, edit: [true,index], formInputVal:inputVals});
+		var inputVals = {edit: true, index: index, title: title, ingredients: ingredients};
+		this.setState({showModal:true, editFlag: inputVals });
 	}
 
 	render() {
@@ -165,7 +166,7 @@ class RecipyList extends React.Component {
 					</tbody>
 				</table>
 				<button onClick={this.open}>add</button>
-        <RecipyForm show={this.state.showModal} close={this.close} handleSubmit={this.handleSubmit} defaultVals={this.state.formInputVal} />
+        <RecipyForm show={this.state.showModal} close={this.close} handleSubmit={this.handleSubmit} defaultVals={this.state.editFlag} />
 			</div>
 		);
 	}
