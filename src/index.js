@@ -33,7 +33,7 @@ class RecipyData extends React.Component {
 							</tbody>
 						</table>
 					</div>
-					<button className='recipy-edit'>edit</button>
+					<button className='recipy-edit' onClick={this.props.edit} >edit</button>
 				</td>
 			</tr>
 		)
@@ -53,10 +53,30 @@ class RecipyListItem extends React.Component {
 	}
 }
 
+class RecipyForm extends React.Component {
+	render() {
+		return (
+			<Modal isOpen={this.props.show}>
+        <ModalHeader>Add Recipy</ModalHeader>
+        <Form onSubmit={this.props.handleSubmit} action='#'>
+	        <ModalBody>
+		        <Label>title</Label><Input placeholder="Enter Title" type='text' name='title' defaultValue={this.props.defaultVals.title}/>
+		        <Label>ingredients</Label><Input type='textarea' rows='10' placeholder="seperate ingredients with a ," name='ingredients' defaultValue={this.props.defaultVals.ingredients} />	                  
+	        </ModalBody>
+	        <ModalFooter>
+	          <Button type='submit' color="primary" value='Submit'>Do Something</Button>{' '}
+	          <Button color="secondary" onClick={this.props.close}>Cancel</Button>
+	        </ModalFooter>
+        </Form> 
+      </Modal>
+		)
+	}			
+}
 
 class RecipyList extends React.Component {
 	constructor (){
 		super();
+		//edit : array to check if we are editing or adding a new recipy first value: boolean, second value: index of edited item
 		this.state = {
 			recipyBook: [{
 				title: 'spaghetti',
@@ -64,16 +84,25 @@ class RecipyList extends React.Component {
 				ingredients: ['noodles','sauce','meat balls']
 			}],
 			showModal: false,
+			edit: [false,0],
+			formInputVal: {
+				title: "",
+				ingredients: []
+			},
+			edit: {
+				edit: false,
+				index: 0,
+				title: "",
+				ingredients: [],
+			}
 		}
 		this.removeRecipy = this.removeRecipy.bind(this);
-		this.addRecipy = this.addRecipy.bind(this);
 		this.showRecipy = this.showRecipy.bind(this);
 		this.open = this.open.bind(this);
 		this.close = this.close.bind(this);
+		this.edit = this.edit.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
-	/*!!!!!!!!!!!! to do: create form to add custom recipy
-	*/
 	open() {
 		this.setState({showModal: true});
 }
@@ -81,11 +110,18 @@ class RecipyList extends React.Component {
     this.setState({ showModal: false });
   }
   handleSubmit(event) {
+  	var index = this.state.edit[1];
   	var title = event.target.title.value;
   	var ingredients = event.target.ingredients.value.split(',');
   	var page = {title:title,display:'none',ingredients:ingredients};
-  	var newBook = update(this.state.recipyBook, {$push:[page]});
-  	this.setState({recipyBook:newBook, showModal: false});
+  	var newBook = [];
+  	if(this.state.edit[0] === false) {
+  		newBook = update(this.state.recipyBook, {$push:[page]});
+  	} else {
+  		newBook = update(this.state.recipyBook, {$splice:[[index,1,page]]});
+  	}
+  	
+  	this.setState({recipyBook:newBook, showModal: false, edit: [false,0]});
   	event.preventDefault();
   }
 	removeRecipy(index) {
@@ -101,6 +137,14 @@ class RecipyList extends React.Component {
 		var newBook = update(this.state.recipyBook, {$splice:[[index,1,page]]});
 		this.setState({recipyBook: newBook})
 	}
+
+	edit(index) {
+		var title = this.state.recipyBook[index].title;
+		var ingredients = this.state.recipyBook[index].ingredients;
+		var inputVals = {title: title, ingredients: ingredients};
+		this.setState({showModal:true, edit: [true,index], formInputVal:inputVals});
+	}
+
 	render() {
 		return (
 			<div className='background'>
@@ -114,26 +158,14 @@ class RecipyList extends React.Component {
 						{this.state.recipyBook.map((recipy,i)=> {
 							return ([
 								//!!! change the binds
-								<RecipyListItem className='recipy-data' key={i} recipy={recipy} show={this.showRecipy.bind(this, i)} remove={this.removeRecipy.bind(this, i)}/>,
-								<RecipyData key={'row-expanded-' + i} recipy={recipy} title={recipy.title +"-"+i} />
+								<RecipyListItem className='recipy-data' key={i} recipy={recipy} show={this.showRecipy.bind(this, i)} remove={this.removeRecipy.bind(this, i)} />,
+								<RecipyData key={'row-expanded-' + i} recipy={recipy} title={recipy.title +"-"+i} edit={this.edit.bind(this, i)}/>
 								])
 						})}				
 					</tbody>
 				</table>
 				<button onClick={this.open}>add</button>
-        <Modal isOpen={this.state.showModal}>
-          <ModalHeader>Add Recipy</ModalHeader>
-          <Form onSubmit={this.handleSubmit} action='#'>
-	          <ModalBody>
-		          <Label>title</Label><Input placeholder="Enter Title" type='text' name='title' />
-		          <Label>ingredients</Label><Input type='textarea' rows='10' placeholder="seperate ingredients with a ," name='ingredients' />	                  
-	          </ModalBody>
-	          <ModalFooter>
-	            <Button type='submit' color="primary" value='Submit'>Do Something</Button>{' '}
-	            <Button color="secondary" onClick={this.close}>Cancel</Button>
-	          </ModalFooter>
-          </Form> 
-        </Modal>
+        <RecipyForm show={this.state.showModal} close={this.close} handleSubmit={this.handleSubmit} defaultVals={this.state.formInputVal} />
 			</div>
 		);
 	}
