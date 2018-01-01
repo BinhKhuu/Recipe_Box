@@ -13,7 +13,7 @@ class Ingredients extends React.Component {
 		);
 	}
 }
-class RecipyData extends React.Component {
+class RecipyListItem extends React.Component {
 	render() {
 		return (
 			<tr className='recipy-data' style={{display:this.props.recipy.display}}>
@@ -27,7 +27,6 @@ class RecipyData extends React.Component {
 							</thead>
 							<tbody>
 							{this.props.recipy.ingredients.map((x,i)=>{
-
 								return <Ingredients key={this.props.recipy.title + '-Ingredient-' + i } item={x} step={i+1}/>
 							})}
 							</tbody>
@@ -40,8 +39,9 @@ class RecipyData extends React.Component {
 	}
 }
 
-class RecipyListItem extends React.Component {
+class RecipyList extends React.Component {
 	render() {
+		var i = this.props.index
 		return (
 			<tr>
 				<td className ='list-item'>
@@ -64,7 +64,7 @@ class RecipyForm extends React.Component {
 		        <Label>ingredients</Label><Input type='textarea' rows='10' placeholder="seperate ingredients with a ," name='ingredients' defaultValue={this.props.defaultVals.ingredients} />	                  
 	        </ModalBody>
 	        <ModalFooter>
-	          <Button type='submit' color="primary" value='Submit'>Do Something</Button>{' '}
+	          <Button type='submit' color="primary" value='Submit'>Save</Button>{' '}
 	          <Button color="secondary" onClick={this.props.close}>Cancel</Button>
 	        </ModalFooter>
         </Form> 
@@ -73,7 +73,7 @@ class RecipyForm extends React.Component {
 	}			
 }
 
-class RecipyList extends React.Component {
+class RecipyBook extends React.Component {
 	constructor (){
 		super();
 		/*editFlag : object indicating editing or adding a new recipy. 
@@ -82,20 +82,35 @@ class RecipyList extends React.Component {
 				title: recipy title at index location
 				ingredients: recipy ingredients at index location
 		*/
-		this.state = {
-			recipyBook: [{
-				title: 'spaghetti',
-				display: 'none',
-				ingredients: ['noodles','sauce','meat balls']
-			}],
-			showModal: false,
-			editFlag: {
-				edit: false,
-				index: 0,
-				title: "",
-				ingredients: [],
+		if(sessionStorage.getItem('recipy')){
+			this.state = {
+				recipyBook: JSON.parse(sessionStorage.getItem('recipy')),
+				showModal: false,
+				editFlag: {
+					edit: false,
+					index: 0,
+					title: "",
+					ingredients: [],
+				}
 			}
 		}
+		else {
+			this.state = {
+				recipyBook: [{
+					title: 'spaghetti',
+					display: 'none',
+					ingredients: ['noodles','sauce','meat balls']
+				}],
+				showModal: false,
+				editFlag: {
+					edit: false,
+					index: 0,
+					title: "",
+					ingredients: [],
+				}
+			}			
+		}
+
 		this.removeRecipy = this.removeRecipy.bind(this);
 		this.showRecipy = this.showRecipy.bind(this);
 		this.open = this.open.bind(this);
@@ -110,7 +125,6 @@ class RecipyList extends React.Component {
     this.setState({ showModal: false });
   }
   handleSubmit(event) {
-
   	var title = event.target.title.value;
   	var ingredients = event.target.ingredients.value.split(',');
   	var page = {title:title,display:'none',ingredients:ingredients};
@@ -121,12 +135,13 @@ class RecipyList extends React.Component {
   		var index = this.state.editFlag.index;
   		newBook = update(this.state.recipyBook, {$splice:[[index,1,page]]});
   	}
-  	
+  	sessionStorage.setItem('recipy', JSON.stringify(newBook));	
   	this.setState({recipyBook:newBook, showModal: false, editFlag: {edit:false,index:0,title:"",ingredients: []} });
   	event.preventDefault();
   }
 	removeRecipy(index) {
 		var newBook = update(this.state.recipyBook, {$splice: [[index,1]]});
+		sessionStorage.setItem('recipy', JSON.stringify(newBook));
 		this.setState({recipyBook:newBook});
 	}
 	showRecipy(index) {
@@ -158,9 +173,8 @@ class RecipyList extends React.Component {
 					<tbody>
 						{this.state.recipyBook.map((recipy,i)=> {
 							return ([
-								//!!! change the binds
-								<RecipyListItem className='recipy-data' key={i} recipy={recipy} show={this.showRecipy.bind(this, i)} remove={this.removeRecipy.bind(this, i)} />,
-								<RecipyData key={'row-expanded-' + i} recipy={recipy} title={recipy.title +"-"+i} edit={this.edit.bind(this, i)}/>
+								<RecipyList className='recipy-data' key={i} recipy={recipy} index={i} show={()=>this.showRecipy(i)} remove={() => this.removeRecipy(i)} />,
+								<RecipyListItem key={'row-expanded-' + i} recipy={recipy} title={recipy.title +"-"+i} edit={()=>this.edit(i)}/>
 								])
 						})}				
 					</tbody>
@@ -173,6 +187,6 @@ class RecipyList extends React.Component {
 }
 
 ReactDOM.render(
-  <RecipyList />,
+  <RecipyBook />,
     document.getElementById('root')
 );
