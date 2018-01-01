@@ -20,6 +20,7 @@ body{
 }
 
 .list-item:hover {
+	color: black;
 	background: lightgreen;
 }
 
@@ -28,19 +29,35 @@ body{
 }
 
 .list-delete{
+	border-radius: 5px;
 	font-size: 50px;
 	float: right;
 }
 .list-delete:hover {
-	background: red;
+	color: red;
 }
 
+.list-add{
+	border-radius: 2px;
+	font-size: 50px;
+}
+.list-add:hover{
+	cursor: pointer;
+	color: lightgreen;
+}
+.recipy-edit {
+	color: black;
+}
+.recipy-edit:hover{
+	cursor: pointer;
+	color: green;
+}
 .list-title{
 	float: left;
 	margin-top: -12px;
 	margin-left: -12px;
 	margin-bottom: -12px;
-	padding-bottom: 26px;
+	padding-bottom: 23px;
 	padding-left: 10px;
 	padding-top: 10px;
 	width:90%;
@@ -51,3 +68,11 @@ body{
 	border: 1px solid black;
 }
 
+.list-ingredients {
+	text-align: center;
+	border: black;
+}
+
+.footer {
+	background: white;
+}

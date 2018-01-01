@@ -7,7 +7,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, Input, Label 
 class Ingredients extends React.Component {
 	render(){
 		return (
-			<tr className='table-info'>
+			<tr className='ingredients'>
 				<td>{this.props.step}. {this.props.item}</td>
 			</tr>
 		);
@@ -16,13 +16,13 @@ class Ingredients extends React.Component {
 class RecipyListItem extends React.Component {
 	render() {
 		return (
-			<tr className='recipy-data' style={{display:this.props.recipy.display}}>
+			<tr className='recipy-data bg-light' style={{display:this.props.recipy.display}}>
 				<td>
 					<div className='recipy-vew'>
-						<table className='table table-hover'>
+						<table className='table table-hover text-dark bg-light'>
 							<thead>			
-								<tr className='table-primary'>
-									<th scope='col' width='100%' >Ingredients</th>
+								<tr className='list-ingredients'>
+									<th scope='col' width='100%' ><h3>Ingredients</h3></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -32,7 +32,7 @@ class RecipyListItem extends React.Component {
 							</tbody>
 						</table>
 					</div>
-					<button className='recipy-edit' onClick={this.props.edit} >edit</button>
+					<i className='recipy-edit material-icons' onClick={this.props.edit} >mode_edit</i>
 				</td>
 			</tr>
 		)
@@ -45,7 +45,7 @@ class RecipyList extends React.Component {
 		return (
 			<tr>
 				<td className ='list-item'>
-					<div className='list-title' onClick={this.props.show}><h4> {(this.props.recipy.display ==='none') ? "+" : "-" } {this.props.recipy.title}</h4></div>
+					<div className='list-title' onClick={this.props.show}><h3> {(this.props.recipy.display ==='none') ? "+" : "-" } {this.props.recipy.title}</h3></div>
 					<i className='list-delete material-icons' onClick={this.props.remove}>delete</i>
 				</td>
 			</tr>
@@ -164,13 +164,13 @@ class RecipyBook extends React.Component {
 	render() {
 		return (
 			<div className='background'>
-				<table className='table'>
+				<table className='table table-bordered'>
 					<thead>
 						<tr className='table-success'>
 							<th scope='col' width='100%'><h1>Recipy Book</h1></th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody className='bg-dark text-white'>
 						{this.state.recipyBook.map((recipy,i)=> {
 							return ([
 								<RecipyList className='recipy-data' key={i} recipy={recipy} index={i} show={()=>this.showRecipy(i)} remove={() => this.removeRecipy(i)} />,
@@ -179,7 +179,7 @@ class RecipyBook extends React.Component {
 						})}				
 					</tbody>
 				</table>
-				<button onClick={this.open}>add</button>
+				<i className='list-add material-icons' onClick={this.open}>library_add</i>
         <RecipyForm show={this.state.showModal} close={this.close} handleSubmit={this.handleSubmit} defaultVals={this.state.editFlag} />
 			</div>
 		);
