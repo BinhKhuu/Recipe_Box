@@ -1,4 +1,4 @@
-Camper Leaderboard
+Recipy Book
 =======
 ###### Simple recipy book, allows you to store and view recipys, recipy is saved per browser session.
 ###### build on React and Boostrap
