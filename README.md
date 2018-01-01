@@ -14,6 +14,6 @@ ____________
   3. go to local host:3000
 
 #### Local storage:
-  1. change lines with sessionStorage to LocalStorage
+  1. change lines with sessionStorage to localStorage
 
  *[Binh Khuu](https://github.com/spoonable)*
