@@ -10,7 +10,6 @@ body{
 }
 
 .background {
-	position: absolute;
 	background-color: white;
 	width: 800px;
 	margin: auto;
@@ -20,9 +19,60 @@ body{
   left: 0;
 }
 
-.recipy-data:hover {
+.list-item:hover {
+	color: black;
 	background: lightgreen;
-
 }
 
+.recipy-vew {
+	width: 100%;
+}
 
+.list-delete{
+	border-radius: 5px;
+	font-size: 50px;
+	float: right;
+}
+.list-delete:hover {
+	color: red;
+}
+
+.list-add{
+	border-radius: 2px;
+	font-size: 50px;
+}
+.list-add:hover{
+	cursor: pointer;
+	color: lightgreen;
+}
+.recipy-edit {
+	color: black;
+}
+.recipy-edit:hover{
+	cursor: pointer;
+	color: green;
+}
+.list-title{
+	float: left;
+	margin-top: -12px;
+	margin-left: -12px;
+	margin-bottom: -12px;
+	padding-bottom: 23px;
+	padding-left: 10px;
+	padding-top: 10px;
+	width:90%;
+}
+
+.title-icon {
+	font-size: 20px;
+	border: 1px solid black;
+}
+
+.list-ingredients {
+	text-align: center;
+	border: black;
+}
+
+.footer {
+	background: white;
+}
